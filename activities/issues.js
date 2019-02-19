@@ -4,16 +4,16 @@ module.exports = async function (activity) {
 
     try {
 
-        api.initialize(activity);  
+        api.initialize(activity);
 
         const response = await api('/issues?state=opened&scope=assigned_to_me');
-        
+
         // convert response to items[]
         activity.Response.Data = api.convertIssues(response);
     } catch (error) {
 
         // return error response
-        var m = error.message;    
+        var m = error.message;
         if (error.stack) m = m + ": " + error.stack;
 
         activity.Response.ErrorCode = (error.response && error.response.statusCode) || 500;
