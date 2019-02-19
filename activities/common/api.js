@@ -15,7 +15,7 @@ function api(path, opts) {
 	opts = Object.assign({
 		json: true,
 		token: _activity.Context.connector.token,
-		endpoint: _activity.Context.connector.endpoint,
+		endpoint: 'https://GitLab.com/api/v4',
 		agent: {
 			http: new HttpAgent(),
 			https: new HttpsAgent()
@@ -49,8 +49,9 @@ api.convertIssues = function(response) {
 
     // iterate through each issue and extract id, title, etc. into a new array
     for(let i=0;i<body.length;i++) {
-        let raw = body[i];
-        let item = { id: raw.id, title: raw.title, description: raw.description, link: raw.web_url, raw: raw}
+		let raw = body[i];
+		let item = { id: raw.id, title: raw.title, description: raw.description, link: raw.web_url, raw: raw}
+		
         items.push(item);
     }
 

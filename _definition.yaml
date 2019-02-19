@@ -1,7 +1,6 @@
 ConnectorTitle: Gitlab
 AccessCodeServiceEndpoint: https://GitLab.com/oauth/authorize
 AccessTokenServiceEndpoint: https://GitLab.com/oauth/token
-ApiEndPoint: https://GitLab.com/api/v4
 UserName: hide
 UserPassword: hide
 ClientId: required
@@ -25,6 +24,3 @@ Custom2Hint: ''
 Custom3Label: Custom Field 3
 Custom3Hint: ''
 Scopes:
-- ScopeName: api
-  ScopeDescription: API Access
-  IsDefault: false

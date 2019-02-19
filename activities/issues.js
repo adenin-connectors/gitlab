@@ -1,6 +1,5 @@
 const api = require('./common/api');
 
-
 module.exports = async function (activity) {
 
     try {
@@ -8,10 +7,9 @@ module.exports = async function (activity) {
         api.initialize(activity);  
 
         const response = await api('/issues?state=opened');
-
+        
         // convert response to items[]
         activity.Response.Data = api.convertIssues(response);
-
     } catch (error) {
 
         // return error response
