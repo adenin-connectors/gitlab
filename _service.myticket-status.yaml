@@ -1,2 +1,8 @@
-InterfaceName: ticketStatus
-Description: Ticket Status
+ServiceName: 'myticket-status'
+InterfaceName: 'items'
+Description: 'myticket-status'
+APIDoc: ''
+Interfaces: 'search,pagination'
+RequiredScopes: ''
+AdditionalParameters:
+Method: ''

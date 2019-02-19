@@ -6,7 +6,7 @@ module.exports = async function (activity) {
 
         api.initialize(activity);  
 
-        const response = await api('/issues?state=opened');
+        const response = await api('/issues?state=opened&scope=assigned_to_me');
         
         // convert response to items[]
         activity.Response.Data = api.convertIssues(response);
