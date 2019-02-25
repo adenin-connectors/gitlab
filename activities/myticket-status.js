@@ -21,12 +21,14 @@ module.exports = async (activity) => {
       urlLabel: 'All tickets',
     };
 
-    if (response.body.length != 0) {
+    let issueCount = response.body.length;
+
+    if (issueCount != 0) {
       ticketStatus = {
         ...ticketStatus,
-        description: `You have ${response.body.length} tickets assigned`,
+        description: `You have ${issueCount > 1 ? issueCount + " issues" : issueCount + " issue"} assigned`,
         color: 'blue',
-        value: response.body.length,
+        value: issueCount,
         actionable: true
       }
     } else {
