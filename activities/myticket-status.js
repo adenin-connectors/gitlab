@@ -1,7 +1,6 @@
 'use strict';
 
-const logger = require('@adenin/cf-logger');
-const handleError = require('@adenin/cf-activity').handleError;
+const cfActivity = require('@adenin/cf-activity');;
 const api = require('./common/api');
 
 module.exports = async (activity) => {
@@ -10,10 +9,18 @@ module.exports = async (activity) => {
 
     const userNameResponse = await api('/user');
 
+    if (!cfActivity.isResponseOk(activity, userNameResponse)) {
+      return;
+    }
+
     let username = userNameResponse.body.username;
     let openIssuesUrl = `https://gitlab.com/dashboard/issues?assignee_username=${username}`;
 
     const response = await api('/issues?state=opened&scope=assigned_to_me');
+
+    if (!cfActivity.isResponseOk(activity, response)) {
+      return;
+    }
 
     let ticketStatus = {
       title: 'Open Tickets',
@@ -40,8 +47,8 @@ module.exports = async (activity) => {
     }
 
     activity.Response.Data = ticketStatus;
-
   } catch (error) {
-    handleError(error, activity);
+    
+    cfActivity.handleError(error, activity);
   }
 };
