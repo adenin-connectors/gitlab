@@ -11,7 +11,6 @@ function api(path, opts) {
     return Promise.reject(new TypeError(`Expected \`path\` to be a string, got ${typeof path}`));
   }
 
-
   opts = Object.assign({
     json: true,
     token: _activity.Context.connector.token,
@@ -42,12 +41,11 @@ function api(path, opts) {
     throw err;
   });
 }
-// convert response from /issues endpoint to 
+//**maps response data to items */
 api.convertIssues = function (response) {
   let items = [];
   let body = response.body;
 
-  // iterate through each issue and extract id, title, etc. into a new array
   for (let i = 0; i < body.length; i++) {
     let raw = body[i];
     let item = { id: raw.id, title: raw.title, description: raw.description, link: raw.web_url, raw: raw }
