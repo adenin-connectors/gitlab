@@ -1,6 +1,6 @@
 'use strict';
 
-const cfActivity = require('@adenin/cf-activity');;
+const cfActivity = require('@adenin/cf-activity');
 const api = require('./common/api');
 
 module.exports = async (activity) => {

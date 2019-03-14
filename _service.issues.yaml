@@ -1,2 +1,9 @@
-InterfaceName: items
-Description: List Of Issues
+ServiceName: 'issues'
+InterfaceName: 'items'
+Description: 'List Of Issues'
+APIDoc: ''
+Interfaces: 'search,pagination'
+RequiredScopes: ''
+AdditionalParameters:
+Method: ''
+

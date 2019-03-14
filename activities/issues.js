@@ -7,8 +7,8 @@ module.exports = async function (activity) {
 
   try {
     api.initialize(activity);
-
-    const response = await api('/issues?state=opened&scope=assigned_to_me');
+    var pagination = cfActivity.pagination(activity);
+    const response = await api(`/issues?state=opened&scope=assigned_to_me&page=${pagination.page}&per_page=${pagination.pageSize}`);
 
     if (!cfActivity.isResponseOk(activity, response)) {
       return;
