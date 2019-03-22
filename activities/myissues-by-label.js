@@ -26,14 +26,21 @@ function mapResponseToChartData(response) {
   let tickets = response.body;
   let data = [];
 
+  let noLabelsCount = 0;
+
   //get all the used labels
   for (let i = 0; i < tickets.length; i++) {
-    for (let x = 0; x < tickets[i].labels.length; x++) {
-      if (!labels.includes(tickets[i].labels[x])) {
-        labels.push(tickets[i].labels[x]);
+    if (tickets[i].labels.length > 0) {
+      for (let x = 0; x < tickets[i].labels.length; x++) {
+        if (!labels.includes(tickets[i].labels[x])) {
+          labels.push(tickets[i].labels[x]);
+        }
       }
+    } else {
+      noLabelsCount++;
     }
   }
+
   //count each label in every ticket
   for (let i = 0; i < labels.length; i++) {
     let counter = 0;
@@ -46,6 +53,9 @@ function mapResponseToChartData(response) {
     }
     data.push(counter);
   }
+  labels.push('No Label');
+  data.push(noLabelsCount);
+
   datasets.push({ label: 'Tickets Number', data });
 
   let chartData = {
