@@ -1,5 +1,4 @@
 'use strict';
-
 const cfActivity = require('@adenin/cf-activity');
 const api = require('./common/api');
 
@@ -17,7 +16,8 @@ module.exports = async (activity) => {
     let openIssuesUrl = `https://gitlab.com/dashboard/issues?assignee_username=${username}`;
 
     var dateRange = cfActivity.dateRange(activity, "today");
-    const response = await api(`/issues?state=opened&scope=assigned_to_me&created_after=${dateRange.startDate}&created_before=${dateRange.endDate}`);
+    const response = await api(`/issues?state=opened&scope=assigned_to_me` +
+      `&created_after=${dateRange.startDate}&created_before=${dateRange.endDate}`);
 
     if (!cfActivity.isResponseOk(activity, response)) {
       return;

@@ -1,0 +1,8 @@
+ServiceName: 'myissues-by-label'
+InterfaceName: 'chart'
+Description: 'My Open Issues By Label'
+APIDoc: ''
+Interfaces: ''
+RequiredScopes: ''
+AdditionalParameters:
+Method: ''
