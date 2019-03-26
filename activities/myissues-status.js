@@ -1,31 +1,23 @@
 'use strict';
-
-const cfActivity = require('@adenin/cf-activity');;
 const api = require('./common/api');
 
 module.exports = async (activity) => {
   try {
-    api.initialize(activity);
-
     const userNameResponse = await api('/user');
 
-    if (!cfActivity.isResponseOk(activity, userNameResponse)) {
-      return;
-    }
+    if (Activity.isErrorResponse(userNameResponse)) return;
 
     let username = userNameResponse.body.username;
     let openIssuesUrl = `https://gitlab.com/dashboard/issues?assignee_username=${username}`;
 
     const response = await api('/issues?state=opened&scope=assigned_to_me');
 
-    if (!cfActivity.isResponseOk(activity, response)) {
-      return;
-    }
+    if (Activity.isErrorResponse(response)) return;
 
     let ticketStatus = {
-      title: 'Open Tickets',
+      title: T('Open Issues'),
       url: openIssuesUrl,
-      urlLabel: 'All tickets',
+      urlLabel: T('All Issues'),
     };
 
     let issueCount = response.body.length;
@@ -33,7 +25,7 @@ module.exports = async (activity) => {
     if (issueCount != 0) {
       ticketStatus = {
         ...ticketStatus,
-        description: `You have ${issueCount > 1 ? issueCount + " issues" : issueCount + " issue"} assigned`,
+        description: issueCount > 1 ? T("You have {0} assigned issues.", issueCount) : T("You have 1 assigned issue."),
         color: 'blue',
         value: issueCount,
         actionable: true
@@ -41,13 +33,13 @@ module.exports = async (activity) => {
     } else {
       ticketStatus = {
         ...ticketStatus,
-        description: `You have no tickets assigned`,
+        description: T(`You have no issues assigned.`),
         actionable: false
       };
     }
 
     activity.Response.Data = ticketStatus;
   } catch (error) {
-    cfActivity.handleError(activity, error);
+    Activity.handleError(error);
   }
 };
