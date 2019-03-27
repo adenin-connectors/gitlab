@@ -16,8 +16,8 @@ module.exports = async (activity) => {
 
     let ticketStatus = {
       title: T('Open Issues'),
-      url: openIssuesUrl,
-      urlLabel: T('All Issues'),
+      link: openIssuesUrl,
+      linkLabel: T('All Issues'),
     };
 
     let issueCount = response.body.length;
