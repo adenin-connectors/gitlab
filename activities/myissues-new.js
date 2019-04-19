@@ -3,31 +3,32 @@ const api = require('./common/api');
 
 module.exports = async (activity) => {
   try {
+    api.initialize(activity);
     const userNameResponse = await api('/user');
 
-    if (Activity.isErrorResponse(userNameResponse)) return;
+    if ($.isErrorResponse(activity, userNameResponse)) return;
 
     let username = userNameResponse.body.username;
     let openIssuesUrl = `https://gitlab.com/dashboard/issues?assignee_username=${username}`;
 
-    var dateRange = Activity.dateRange("today");
+    var dateRange = $.dateRange(activity, "today");
     const response = await api(`/issues?state=opened&scope=assigned_to_me` +
       `&created_after=${dateRange.startDate}&created_before=${dateRange.endDate}`);
 
-    if (Activity.isErrorResponse(response)) return;
+    if ($.isErrorResponse(activity, response)) return;
 
     let ticketStatus = {
-      title: T('New Open Issues'),
+      title: T(activity, 'New Open Issues'),
       link: openIssuesUrl,
-      linkLabel: T('All Issues'),
+      linkLabel: T(activity, 'All Issues'),
     };
 
     let issueCount = response.body.length;
-    
+
     if (issueCount != 0) {
       ticketStatus = {
         ...ticketStatus,
-        description: issueCount > 1 ? T("You have {0} new issues assigned.", issueCount) : T("You have 1 new issue assigned."),
+        description: issueCount > 1 ? T(activity, "You have {0} new issues assigned.", issueCount) : T(activity, "You have 1 new issue assigned."),
         color: 'blue',
         value: issueCount,
         actionable: true
@@ -35,13 +36,13 @@ module.exports = async (activity) => {
     } else {
       ticketStatus = {
         ...ticketStatus,
-        description: T(`You have no new issues assigned.`),
+        description: T(activity, `You have no new issues assigned.`),
         actionable: false
       };
     }
 
     activity.Response.Data = ticketStatus;
   } catch (error) {
-    Activity.handleError(error);
+    $.handleError(activity, error);
   }
 };
