@@ -1,0 +1,8 @@
+InterfaceName: 'items'
+Description: 'List Of My Issues'
+APIDoc: ''
+Interfaces: 'pagination'
+RequiredScopes: ''
+AdditionalParameters:
+Method: ''
+

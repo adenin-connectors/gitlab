@@ -1,8 +1,6 @@
 'use strict';
 const api = require('./common/api');
-/////////////////////////////////////////////////////////////////////////////////
-//THIS ACTIVITY IS NOT FINISHED, IT NEEDS ADITIONAL FITLERING TO GET ALL ISSUES//
-/////////////////////////////////////////////////////////////////////////////////
+
 module.exports = async function (activity) {
   try {
     api.initialize(activity);
@@ -13,8 +11,7 @@ module.exports = async function (activity) {
     let openIssuesUrl = `https://gitlab.com/dashboard/issues?assignee_username=${username}`;
 
     var pagination = $.pagination(activity);
-    const response = await api(`/issues?state=opened&scope=all&page=${pagination.page}&per_page=${pagination.pageSize}`);
-
+    const response = await api(`/issues?state=opened&scope=assigned_to_me&page=${pagination.page}&per_page=${pagination.pageSize}`);
     if ($.isErrorResponse(activity, response)) return;
 
     activity.Response.Data.items = api.convertIssues(response);
@@ -27,10 +24,10 @@ module.exports = async function (activity) {
     if (value > 0) {
       activity.Response.Data.value = value;
       activity.Response.Data.color = 'blue';
-      activity.Response.Data.description = value > 1 ? T(activity, "There are {0} open issues on Gitlab.", value)
-        : T(activity, "There is 1 open issue on Gitlab.");
+      activity.Response.Data.description = value > 1 ? T(activity, "You have {0} assigned issues.", value)
+        : T(activity, "You have 1 assigned issue.");
     } else {
-      activity.Response.Data.description = T(activity, 'There are no open issues on Gitlab');
+      activity.Response.Data.description = T(activity, `You have no issues assigned.`);
     }
   } catch (error) {
     $.handleError(activity, error);

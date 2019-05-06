@@ -1,8 +1,0 @@
-ServiceName: 'myissues-status'
-InterfaceName: 'status'
-Description: 'My Issues Status'
-APIDoc: ''
-Interfaces: 'search,pagination'
-RequiredScopes: ''
-AdditionalParameters:
-Method: ''

@@ -46,9 +46,11 @@ api.convertIssues = function (response) {
     const raw = body[i];
 
     const item = {
+      wow: body.length,
       id: raw.id,
       title: raw.title,
       description: raw.description,
+      date: raw.created_at,
       link: raw.web_url,
       raw: raw
     };
@@ -56,9 +58,7 @@ api.convertIssues = function (response) {
     items.push(item);
   }
 
-  return {
-    items: items
-  };
+  return { items };
 };
 
 const helpers = [
@@ -81,8 +81,8 @@ api.stream = (url, opts) => got(url, Object.assign({}, opts, {
 
 for (const x of helpers) {
   const method = x.toUpperCase();
-  api[x] = (url, opts) => api(url, Object.assign({}, opts, {method}));
-  api.stream[x] = (url, opts) => api.stream(url, Object.assign({}, opts, {method}));
+  api[x] = (url, opts) => api(url, Object.assign({}, opts, { method }));
+  api.stream[x] = (url, opts) => api.stream(url, Object.assign({}, opts, { method }));
 }
 
 module.exports = api;
