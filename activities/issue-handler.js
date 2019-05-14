@@ -4,7 +4,7 @@ module.exports = async (activity) => {
   try {
 
     // validate X-Gitlab-Token header
-    if (activity.Context.connector.custom1 != activity.Request.Headers["X-Gitlab-Token"]) {
+    if (!activity.Context.connector.custom1 ||(activity.Context.connector.custom1 != activity.Request.Headers["X-Gitlab-Token"])) {
       activity.Response.ErrorCode = 403;
       activity.Response.Data = {
         ErrorText: "invalid X-Gitlab-Token"
