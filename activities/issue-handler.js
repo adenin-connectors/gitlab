@@ -31,15 +31,19 @@ module.exports = async (activity) => {
           link: request.object_attributes.url
         };
 
-        if (request.object_attributes.state == "opened") {
+        const action = request.object_attributes.action;
+        if (action == "open" || action == "update" || action == "close") {
           api.initialize(activity);
 
           let promises = [];
           for (let i = 0; i < request.object_attributes.assignee_ids.length; i++) {
             promises.push(api(`/users/${request.object_attributes.assignee_ids[i]}`));
           }
-          // also get owner's info
-          promises.push(api(`/users/${request.object_attributes.author_id}`));
+
+          if (action != "close") {
+            // also get owner's info
+            promises.push(api(`/users/${request.object_attributes.author_id}`));
+          }
 
           const responses = await Promise.all(promises);
           for (let i = 0; i < responses.length; i++) {
@@ -47,21 +51,26 @@ module.exports = async (activity) => {
           }
 
           let userMails = [];
-          for (let i = 0; i < responses.length-1; i++) {
-            if (responses[i].body.public_email != ""){
-             userMails.push(responses[i].body.public_email);
+          for (let i = 0; i < responses.length - 1; i++) {
+            if (responses[i].body.public_email != "") {
+              userMails.push(responses[i].body.public_email);
             }
           }
 
-          collections.push({ name: "my", users: userMails, date: date });
+          // these are roles used for testing adenin.gatekeeper.MaterializedCollectionsService
+          let testRoles = ["Administrator", "Editor"];
+          
+          collections.push({ name: "my", users: userMails, roles: testRoles, date: date });
 
-          // push owner mail
-          let ownerMail = responses[promises.length-1].body.public_email;
-          if(ownerMail!="" && !userMails.includes(ownerMail)){
-            userMails.push(ownerMail);
+          if (action != "close") {
+            // push owner mail
+            let ownerMail = responses[promises.length - 1].body.public_email;
+            if (ownerMail != "" && !userMails.includes(ownerMail)) {
+              userMails.push(ownerMail);
+            }
+
+            collections.push({ name: "open", users: userMails, roles: testRoles, date: date });
           }
-
-          collections.push({ name: "open", users: userMails, date: date });
         }
         break;
 
