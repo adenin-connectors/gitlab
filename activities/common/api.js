@@ -38,15 +38,14 @@ function api(path, opts) {
 }
 
 //**maps response data to items */
-api.convertIssues = function (response) {
+api.convertIssues = function (issues) {
   const items = [];
-  const body = response.body;
 
-  for (let i = 0; i < body.length; i++) {
-    const raw = body[i];
+  for (let i = 0; i < issues.length; i++) {
+    const raw = issues[i];
 
     const item = {
-      wow: body.length,
+      wow: issues.length,
       id: raw.id,
       title: raw.title,
       description: raw.description,

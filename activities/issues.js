@@ -17,7 +17,7 @@ module.exports = async function (activity) {
 
     if ($.isErrorResponse(activity, response)) return;
 
-    activity.Response.Data.items = api.convertIssues(response);
+    activity.Response.Data.items = api.convertIssues(response.body);
     let value = activity.Response.Data.items.items.length;
     activity.Response.Data.title = T(activity, 'Open Issues');
     activity.Response.Data.link = openIssuesUrl;
