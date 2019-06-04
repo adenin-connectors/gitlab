@@ -12,8 +12,10 @@ module.exports = async function (activity) {
     let username = usernameResponse.body.username;
     let openIssuesUrl = `https://gitlab.com/dashboard/issues?assignee_username=${username}`;
 
+    var dateRange = $.dateRange(activity, "today");
     var pagination = $.pagination(activity);
-    const response = await api(`/issues?state=opened&scope=all&page=${pagination.page}&per_page=${pagination.pageSize}`);
+    const response = await api(`/issues?state=opened&scope=all&page=${pagination.page}&per_page=${pagination.pageSize}` +
+      `&created_after=${dateRange.startDate}&created_before=${dateRange.endDate}`);
 
     if ($.isErrorResponse(activity, response)) return;
 

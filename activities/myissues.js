@@ -4,7 +4,7 @@ const api = require('./common/api');
 module.exports = async function (activity) {
   try {
     api.initialize(activity);
-    let allEvents = [];
+    let allIssues = [];
     const usernameResponse = await api('/user');
     if ($.isErrorResponse(activity, usernameResponse)) return;
 
@@ -17,23 +17,26 @@ module.exports = async function (activity) {
     let response = await api(`/issues?state=opened&scope=assigned_to_me&page=${page}&per_page=${maxResults}` +
       `&created_after=${dateRange.startDate}&created_before=${dateRange.endDate}`);
     if ($.isErrorResponse(activity, response)) return;
-    allEvents.push(...response.body);
+    allIssues.push(...response.body);
 
-    let counter = 0;
-    while (response.body.length == maxResults) {
+    let hasMore = false;
+    if (response.body.length == maxResults) {
+      hasMore = true;
+    }
+
+    while (hasMore) {
       page++;
       response = await api(`/issues?state=opened&scope=assigned_to_me&page=${page}&per_page=${maxResults}` +
         `&created_after=${dateRange.startDate}&created_before=${dateRange.endDate}`);
       if ($.isErrorResponse(activity, response)) return;
-      allEvents.push(...response.body);
-      counter++;
-      if (counter > 5) {
-        break;
+      allIssues.push(...response.body);
+      if (response.body.length != maxResults) {
+        hasMore = false;
       }
     }
-    let value = allEvents.length;
+    let value = allIssues.length;
     let pagination = $.pagination(activity);
-    let pagiantedItems = paginateItems(allEvents, pagination);
+    let pagiantedItems = paginateItems(allIssues, pagination);
 
     activity.Response.Data.items = api.convertIssues(pagiantedItems);
     activity.Response.Data.title = T(activity, 'Open Issues');
