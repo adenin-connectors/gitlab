@@ -57,10 +57,10 @@ module.exports = async (activity) => {
             }
           }
 
-          // these are roles used for testing adenin.gatekeeper.MaterializedCollectionsService
-          let testRoles = ["Administrator", "Editor"];
+          // roles assigned to user
+          let roles = [];
 
-          collections.push({ name: "my", users: userMails, roles: testRoles, date: date });
+          collections.push({ name: "my", users: userMails, roles: roles, date: date });
 
           let allMails = [];
           if (action != "close") {
@@ -71,7 +71,7 @@ module.exports = async (activity) => {
               allMails.push(ownerMail);
             }
 
-            collections.push({ name: "open", users: allMails, roles: testRoles, date: date });
+            collections.push({ name: "open", users: allMails, roles: roles, date: date });
           }
         }
         break;
