@@ -39,11 +39,9 @@ module.exports = async (activity) => {
           for (let i = 0; i < request.object_attributes.assignee_ids.length; i++) {
             promises.push(api(`/users/${request.object_attributes.assignee_ids[i]}`));
           }
+          // also get owner's info
+          promises.push(api(`/users/${request.object_attributes.author_id}`));
 
-          if (action != "close") {
-            // also get owner's info
-            promises.push(api(`/users/${request.object_attributes.author_id}`));
-          }
 
           const responses = await Promise.all(promises);
           for (let i = 0; i < responses.length; i++) {
@@ -60,18 +58,36 @@ module.exports = async (activity) => {
           // roles assigned to user
           let roles = [];
 
-          collections.push({ name: "my", users: userMails, roles: roles, date: date });
+          // case 1: A collection "all" is returned with users and roles
+          collections.push({ name: "all", users: userMails, roles: roles, date: date });
 
-          let allMails = [];
           if (action != "close") {
-            // push owner mail
-            let ownerMail = responses[promises.length - 1].body.public_email;
-            if (ownerMail != "" && !userMails.includes(ownerMail)) {
-              allMails.push(...allMails);
-              allMails.push(ownerMail);
+
+            // case 2: When open == true we return collection “open”, with users and roles
+            collections.push({ name: "open", users: userMails, roles: roles, date: date });
+
+            // case 3: When AssignedTo is not empty and open we return a collection “my”, with only users: AssignedTo
+            // if assignedTo is empty we use roles instead
+            if (userMails.length > 0) {
+              collections.push({ name: "my", users: userMails, roles: [], date: date });
+            } else {
+              collections.push({ name: "my", users: [], roles: roles, date: date });
             }
 
-            collections.push({ name: "open", users: allMails, roles: roles, date: date });
+            // case 4: When DueDate is provided and open we return a collection “due”, with users and roles; date = DueDate
+            collections.push({ name: "due", users: userMails, roles: roles, date: date });
+
+            let dueDate = null;
+            if (request.object_attributes.due_date) {
+              dueDate = new Date(request.object_attributes.due_date).toISOString();
+            }
+            // case 5: When DueDate is provided and open we return a collection “my-due”, with only users: AssignedTo, date = DueDate
+            // if assignedTo is empty we use roles
+            if (userMails.length > 0) {
+              collections.push({ name: "my-due", users: userMails, roles: [], date: dueDate || date });
+            } else {
+              collections.push({ name: "my-due", users: [], roles: roles, date: dueDate || date });
+            }
           }
         }
         break;
