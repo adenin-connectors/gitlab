@@ -6,5 +6,8 @@
   "You have no issues assigned.": "Nemate dodeljenih problema.",
   "There are {0} open issues on Gitlab." : "Na Gitlabu ima {0} otvorenih problema.",
   "There is 1 open issue on Gitlab." : "Na Gitlabu ima 1 otvorenih problem.",
-  "There are no open issues on Gitlab" : "Nema otvorenih problema na Gitlabu."
+  "There are no open issues on Gitlab" : "Nema otvorenih problema na Gitlabu.",
+  "There are {0} issues on Gitlab." : "Na Gitlabu ima {0} problema.",
+  "There is 1 issue on Gitlab." : "Na Gitlabu ima 1 problem.",
+  "There are no issues on Gitlab" : "Nema problema na Gitlabu."
 }
