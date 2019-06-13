@@ -38,17 +38,18 @@ function api(path, opts) {
 }
 
 //**maps response data to items */
-api.convertIssues = function (response) {
+api.convertIssues = function (issues) {
   const items = [];
-  const body = response.body;
 
-  for (let i = 0; i < body.length; i++) {
-    const raw = body[i];
+  for (let i = 0; i < issues.length; i++) {
+    const raw = issues[i];
 
     const item = {
+      wow: issues.length,
       id: raw.id,
       title: raw.title,
       description: raw.description,
+      date: raw.created_at,
       link: raw.web_url,
       raw: raw
     };
@@ -56,9 +57,7 @@ api.convertIssues = function (response) {
     items.push(item);
   }
 
-  return {
-    items: items
-  };
+  return { items };
 };
 
 const helpers = [
@@ -81,8 +80,8 @@ api.stream = (url, opts) => got(url, Object.assign({}, opts, {
 
 for (const x of helpers) {
   const method = x.toUpperCase();
-  api[x] = (url, opts) => api(url, Object.assign({}, opts, {method}));
-  api.stream[x] = (url, opts) => api.stream(url, Object.assign({}, opts, {method}));
+  api[x] = (url, opts) => api(url, Object.assign({}, opts, { method }));
+  api.stream[x] = (url, opts) => api.stream(url, Object.assign({}, opts, { method }));
 }
 
 module.exports = api;

@@ -1,8 +1,8 @@
-ServiceName: 'myissues-new'
 InterfaceName: 'status'
-Description: 'My New Issues'
+Description: 'List Of My Issues'
 APIDoc: ''
-Interfaces: 'daterange'
+Interfaces: 'items,daterange,pagination'
 RequiredScopes: ''
 AdditionalParameters:
 Method: ''
+
