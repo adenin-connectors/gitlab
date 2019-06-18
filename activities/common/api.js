@@ -57,7 +57,7 @@ api.convertIssues = function (issues) {
     items.push(item);
   }
 
-  return { items };
+  return items;
 };
 
 const helpers = [

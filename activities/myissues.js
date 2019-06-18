@@ -15,7 +15,7 @@ module.exports = async function (activity) {
     let page = 1;
     let maxResults = 100;
     let response = await api(`/issues?state=opened&scope=assigned_to_me&page=${page}&per_page=${maxResults}` +
-      `&created_after=${dateRange.startDate}&created_before=${dateRange.endDate}`);
+      `&created_after=${dateRange.startDate}&created_before=${dateRange.endDate}&order_by=created_at&sort=desc`);
     if ($.isErrorResponse(activity, response)) return;
     allIssues.push(...response.body);
 
@@ -27,7 +27,7 @@ module.exports = async function (activity) {
     while (hasMore) {
       page++;
       response = await api(`/issues?state=opened&scope=assigned_to_me&page=${page}&per_page=${maxResults}` +
-        `&created_after=${dateRange.startDate}&created_before=${dateRange.endDate}`);
+        `&created_after=${dateRange.startDate}&created_before=${dateRange.endDate}&order_by=created_at&sort=desc`);
       if ($.isErrorResponse(activity, response)) return;
       allIssues.push(...response.body);
       if (response.body.length != maxResults) {
@@ -46,6 +46,7 @@ module.exports = async function (activity) {
 
     if (value > 0) {
       activity.Response.Data.value = value;
+      activity.Response.Data.date = activity.Response.Data.items[0].date;
       activity.Response.Data.color = 'blue';
       activity.Response.Data.description = value > 1 ? T(activity, "You have {0} assigned issues.", value)
         : T(activity, "You have 1 assigned issue.");
