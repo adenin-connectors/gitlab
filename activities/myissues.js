@@ -39,19 +39,21 @@ module.exports = async function (activity) {
     let pagiantedItems = paginateItems(allIssues, pagination);
 
     activity.Response.Data.items = api.convertIssues(pagiantedItems);
-    activity.Response.Data.title = T(activity, 'Open Issues');
-    activity.Response.Data.link = openIssuesUrl;
-    activity.Response.Data.linkLabel = T(activity, 'All Issues');
-    activity.Response.Data.actionable = value > 0;
+    if (parseInt(pagination.page) == 1) {
+      activity.Response.Data.title = T(activity, 'Open Issues');
+      activity.Response.Data.link = openIssuesUrl;
+      activity.Response.Data.linkLabel = T(activity, 'All Issues');
+      activity.Response.Data.actionable = value > 0;
 
-    if (value > 0) {
-      activity.Response.Data.value = value;
-      activity.Response.Data.date = activity.Response.Data.items[0].date;
-      activity.Response.Data.color = 'blue';
-      activity.Response.Data.description = value > 1 ? T(activity, "You have {0} assigned issues.", value)
-        : T(activity, "You have 1 assigned issue.");
-    } else {
-      activity.Response.Data.description = T(activity, `You have no issues assigned.`);
+      if (value > 0) {
+        activity.Response.Data.value = value;
+        activity.Response.Data.date = allIssues[0].created_at;
+        activity.Response.Data.color = 'blue';
+        activity.Response.Data.description = value > 1 ? T(activity, "You have {0} assigned issues.", value)
+          : T(activity, "You have 1 assigned issue.");
+      } else {
+        activity.Response.Data.description = T(activity, `You have no issues assigned.`);
+      }
     }
   } catch (error) {
     $.handleError(activity, error);
