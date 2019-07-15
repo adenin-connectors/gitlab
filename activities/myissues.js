@@ -11,7 +11,7 @@ module.exports = async function (activity) {
     let username = usernameResponse.body.username;
     let openIssuesUrl = `https://gitlab.com/dashboard/issues?assignee_username=${username}`;
 
-    var dateRange = $.dateRange(activity, "today");
+    var dateRange = $.dateRange(activity);
     let page = 1;
     let maxResults = 100;
     let response = await api(`/issues?state=opened&scope=assigned_to_me&page=${page}&per_page=${maxResults}` +
