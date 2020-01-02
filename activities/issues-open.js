@@ -1,40 +1,42 @@
 'use strict';
+
 const api = require('./common/api');
-/////////////////////////////////////////////////////////////////////////////////
-//THIS ACTIVITY IS NOT FINISHED, IT NEEDS ADITIONAL FITLERING TO GET ALL ISSUES//
-/////////////////////////////////////////////////////////////////////////////////
-module.exports = async function (activity) {
+
+module.exports = async (activity) => {
   try {
     api.initialize(activity);
-    const usernameResponse = await api('/user');
-    if ($.isErrorResponse(activity, usernameResponse)) return;
 
-    let username = usernameResponse.body.username;
-    let openIssuesUrl = `https://gitlab.com/dashboard/issues?assignee_username=${username}`;
-
-    var dateRange = $.dateRange(activity);
-    var pagination = $.pagination(activity);
-    const response = await api(`/issues?state=opened&scope=all&page=${pagination.page}&per_page=${pagination.pageSize}` +
-      `&created_after=${dateRange.startDate}&created_before=${dateRange.endDate}&order_by=created_at&sort=desc`);
+    const response = await api('/issues?state=opened&scope=assigned_to_me&per_page=100');
 
     if ($.isErrorResponse(activity, response)) return;
 
-    activity.Response.Data.items = api.convertIssues(response.body);
-    if (parseInt(pagination.page) == 1) {
-      let value = activity.Response.Data.items.length;
+    const pagination = $.pagination(activity);
+    const items = api.paginateItems(response.body, pagination);
+
+    activity.Response.Data.items = api.convertIssues(items);
+
+    if (parseInt(pagination.page) === 1) {
+      const value = response.body.length;
+
       activity.Response.Data.title = T(activity, 'Open Issues');
-      activity.Response.Data.link = openIssuesUrl;
       activity.Response.Data.linkLabel = T(activity, 'All Issues');
       activity.Response.Data.actionable = value > 0;
+      activity.Response.Data.thumbnail = 'https://www.adenin.com/assets/images/wp-images/logo/gitlab.svg';
 
       if (value > 0) {
         activity.Response.Data.value = value;
-        activity.Response.Data.date = activity.Response.Data.items[0].date;
-        activity.Response.Data.color = 'blue';
-        activity.Response.Data.description = value > 1 ? T(activity, "There are {0} open issues on Gitlab.", value)
-          : T(activity, "There is 1 open issue on Gitlab.");
+        activity.Response.Data.link = `https://gitlab.com/dashboard/issues?assignee_username=${response.body[0].assignee.username}`;
+        activity.Response.Data.description = value > 1 ? T(activity, 'You have {0} open issues assigned.', value) : T(activity, 'You have 1 open issue assigned.');
+        activity.Response.Data.briefing = activity.Response.Data.description + ` The latest is <b>${activity.Response.Data.items[0].title}</b>`;
       } else {
-        activity.Response.Data.description = T(activity, 'There are no open issues on Gitlab');
+        activity.Response.Data.description = T(activity, 'You have no open issues assigned.');
+
+        // because we have username in response items, we only need this request if the response array was empty
+        const usernameResponse = await api('/user');
+
+        if ($.isErrorResponse(activity, usernameResponse)) return;
+
+        activity.Response.Data.link = `https://gitlab.com/dashboard/issues?assignee_username=${usernameResponse.body.username}`;
       }
     }
   } catch (error) {
