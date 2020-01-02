@@ -37,27 +37,41 @@ function api(path, opts) {
   });
 }
 
-//**maps response data to items */
-api.convertIssues = function (issues) {
+api.convertIssues = (issues) => {
   const items = [];
 
   for (let i = 0; i < issues.length; i++) {
     const raw = issues[i];
-
     const item = {
-      wow: issues.length,
       id: raw.id,
       title: raw.title,
       description: raw.description,
       date: raw.created_at,
       link: raw.web_url,
-      raw: raw
+      thumbnail: raw.author.avatar_url ? raw.author.avatar_url : $.avatarLink(raw.author.name),
+      imageIsAvatar: true
     };
 
     items.push(item);
   }
 
   return items;
+};
+
+api.paginateItems = (items, pagination) => {
+  const paginatedItems = [];
+  const pageSize = parseInt(pagination.pageSize);
+  const offset = (parseInt(pagination.page) - 1) * pageSize;
+
+  if (offset > items.length) return paginatedItems;
+
+  for (let i = offset; i < offset + pageSize; i++) {
+    if (i >= items.length) break;
+
+    paginatedItems.push(items[i]);
+  }
+
+  return paginatedItems;
 };
 
 const helpers = [
@@ -73,15 +87,15 @@ api.initialize = (activity) => {
   _activity = activity;
 };
 
-api.stream = (url, opts) => got(url, Object.assign({}, opts, {
+api.stream = (url, opts) => api(url, Object.assign({}, opts, {
   json: false,
   stream: true
 }));
 
 for (const x of helpers) {
   const method = x.toUpperCase();
-  api[x] = (url, opts) => api(url, Object.assign({}, opts, { method }));
-  api.stream[x] = (url, opts) => api.stream(url, Object.assign({}, opts, { method }));
+  api[x] = (url, opts) => api(url, Object.assign({}, opts, {method}));
+  api.stream[x] = (url, opts) => api.stream(url, Object.assign({}, opts, {method}));
 }
 
 module.exports = api;
