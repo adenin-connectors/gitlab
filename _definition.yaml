@@ -13,6 +13,7 @@ ServiceUrl: hide
 ServiceUrlHint: ''
 XML2JSON: hide
 ImpersonateOAuth: required
+WebhookReceiver: !!bool true
 Interface: hide
 Custom1: optional
 Custom1Label: Webhook Secret Token
