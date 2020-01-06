@@ -21,7 +21,7 @@ module.exports = async function (activity) {
 
     activity.Response.Data.items = api.convertIssues(response.body);
     if (parseInt(pagination.page) == 1) {
-      let value = activity.Response.Data.length;
+      let value = activity.Response.Data.items.length;
       activity.Response.Data.title = T(activity, 'All Issues');
       activity.Response.Data.link = openIssuesUrl;
       activity.Response.Data.linkLabel = T(activity, 'All Issues');
