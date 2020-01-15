@@ -1,8 +1,12 @@
 'use strict';
 
 const got = require('got');
+
 const HttpAgent = require('agentkeepalive');
 const HttpsAgent = HttpAgent.HttpsAgent;
+
+const showdown = require('showdown');
+const converter = new showdown.Converter();
 
 let _activity = null;
 
@@ -45,7 +49,7 @@ api.convertIssues = (issues) => {
     const item = {
       id: raw.id,
       title: raw.title,
-      description: raw.description,
+      description: converter.makeHtml(raw.description),
       date: raw.created_at,
       link: raw.web_url,
       thumbnail: raw.author.avatar_url ? raw.author.avatar_url : $.avatarLink(raw.author.name),
