@@ -47,7 +47,9 @@ api.convertIssues = (issues) => {
     const item = {
       id: raw.id,
       title: raw.title,
-      description: removeMarkdown(raw.description),
+      description: removeMarkdown(raw.description, {
+        useImgAltText: false
+      }),
       date: raw.created_at,
       link: raw.web_url,
       thumbnail: raw.author.avatar_url ? raw.author.avatar_url : $.avatarLink(raw.author.name),
