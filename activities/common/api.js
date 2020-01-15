@@ -3,10 +3,8 @@
 const got = require('got');
 
 const HttpAgent = require('agentkeepalive');
+const removeMarkdown = require('remove-markdown');
 const HttpsAgent = HttpAgent.HttpsAgent;
-
-const {Remarkable} = require('remarkable');
-const converter = new Remarkable();
 
 let _activity = null;
 
@@ -49,7 +47,7 @@ api.convertIssues = (issues) => {
     const item = {
       id: raw.id,
       title: raw.title,
-      description: converter.render(raw.description),
+      description: removeMarkdown(raw.description),
       date: raw.created_at,
       link: raw.web_url,
       thumbnail: raw.author.avatar_url ? raw.author.avatar_url : $.avatarLink(raw.author.name),
