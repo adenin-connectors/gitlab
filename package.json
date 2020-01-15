@@ -11,7 +11,7 @@
     "@adenin/cf-provider": "^2.8.9",
     "agentkeepalive": "^4.1.0",
     "got": "^9.6.0",
-    "showdown": "^1.9.1"
+    "remarkable": "^2.0.0"
   },
   "devDependencies": {
     "@adenin/cf-logger": "^1.7.1",
