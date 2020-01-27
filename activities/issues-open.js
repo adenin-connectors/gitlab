@@ -28,6 +28,7 @@ module.exports = async (activity) => {
         activity.Response.Data.link = `https://gitlab.com/dashboard/issues?assignee_username=${response.body[0].assignee.username}`;
         activity.Response.Data.description = value > 1 ? T(activity, 'You have {0} open issues assigned.', value) : T(activity, 'You have 1 open issue assigned.');
         activity.Response.Data.briefing = activity.Response.Data.description + ` The latest is <b>${activity.Response.Data.items[0].title}</b>`;
+        activity.Response.Data.date = activity.Response.Data.items[0].date;
       } else {
         activity.Response.Data.description = T(activity, 'You have no open issues assigned.');
 
